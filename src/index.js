@@ -77,7 +77,58 @@ export default class BaseballGame {
     this.play(this.computerInputNumbers, this.userInputNumbers);
   };
 
+  checkAnswer = ({ computerInputNumbers, userInputNumbers }) => {
+    return computerInputNumbers.every(
+      (num, index) => num === userInputNumbers[index]
+    );
+  };
+
+  NumOfStrike = ({ computerInputNumbers, userInputNumbers }) => {
+    let numOfStrike = 0;
+
+    computerInputNumbers.forEach((num, index) => {
+      if (num === userInputNumbers[index]) {
+        numOfStrike++;
+      }
+    });
+    return numOfStrike;
+  };
+
+  NumOfBall = ({ computerInputNumbers, userInputNumbers }) => {
+    let numOfBall = 0;
+
+    userInputNumbers.forEach((userNum, index) => {
+      const numIndexInComputerInputNumbers = computerInputNumbers.findIndex(
+        (computerNum) => computerNum === userNum
+      );
+
+      if (
+        numIndexInComputerInputNumbers !== -1 &&
+        index !== numIndexInComputerInputNumbers
+      ) {
+        numOfBall++;
+      }
+    });
+
+    return numOfBall;
+  };
+
   play(computerInputNumbers, userInputNumbers) {
-    return '결과 값 String';
+    const numBall = this.NumOfBall({ computerInputNumbers, userInputNumbers });
+    const numStrike = this.NumOfStrike({
+      computerInputNumbers,
+      userInputNumbers,
+    });
+
+    if (this.isCorrectAnswer({ computerInputNumbers, userInputNumbers })) {
+      return ' 정답입니다';
+    }
+
+    if (numBall === 0 && numStrike === 0) {
+      return '낫싱';
+    }
+    return `${numBall > 0 ? `${numBall}볼 ` : ''}${
+      numStrike > 0 ? `${numStrike}스트라이크` : ''
+    }`;
   }
 }
